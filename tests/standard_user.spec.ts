@@ -9,25 +9,14 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('cannotAccessPagesIfNotLoggedIn', { tag: ['@standarduser'] }, async ({ page }) => {
-  await page.goto('https://qa-challenge.codesubmit.io/inventory.html');
-  await expect(page).toHaveTitle('Swag Labs');
+  var listOfPages = ["inventory", "cart", "checkout-step-one", "checkout-step-two", "checkout-complete"];
 
-  //fill username and password
-  await loginHelper.login('standard_user', 'secret_sauce')
-
-  //see that login is complete and products are displayed
-  await expect(page.locator('[data-test="title"]')).toContainText('Products');
-  await expect(page.locator('[data-test="inventory-list"]')).not.toBeEmpty();
+  for (let i = 0; i < listOfPages.length; i++) {
+    await page.goto('https://qa-challenge.codesubmit.io/' + listOfPages[i].toString() + '.html');
+    //await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: You can only access \'/inventory.html\' when you are logged in.');
+    await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: You can only access \'/' + listOfPages[i].toString() + '.html\' when you are logged in.');
+  }
 });
-
-//TODO:
-//cannot see product if not logged in
-//loop through ids=...
-//https://qa-challenge.codesubmit.io/inventory-item.html?id=4
-//https://qa-challenge.codesubmit.io/checkout-step-one.html
-//https://qa-challenge.codesubmit.io/checkout-step-two.html
-//https://qa-challenge.codesubmit.io/cart.html
-//https://qa-challenge.codesubmit.io/checkout-complete.html
 
 test('standardUserCanLoginSuccessfully', async ({ page }) => {
   //login as std user
@@ -99,7 +88,7 @@ test('standardUserIncorrectPasswordFails', async ({ page }) => {
 //BELOW TWO NOT MENTIONED IN README BUT WERE ON WEBSITE AS 'Accepted Usernames' SO INCLUDED HERE
 
 test('ErrorUserLogin', async ({ page }) => {
-    //login as error user
+  //login as error user
   await loginHelper.login('error_user', 'secret_sauce')
 
   //login succeeds
