@@ -1,16 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { LoginHelper } from '../helpers/login-helper'
+
+let loginHelper: LoginHelper
+
+test.beforeEach(async ({ page }) => {
+  loginHelper = new LoginHelper(page)
+  await page.goto('https://qa-challenge.codesubmit.io/')
+});
 
 //locked_out_user
 test('LockedOutUserLoginFailsDueToLockedOut', async ({ page }) => {
-  await page.goto('https://qa-challenge.codesubmit.io/');
-  await expect(page).toHaveTitle('Swag Labs');
-
-  //fill username and password
-  await page.locator('[data-test="username"]').click();
-  page.locator('[data-test="username"]').fill('locked_out_user');
-  await page.locator('[data-test="password"]').click();
-  page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
+  await loginHelper.login('locked_out_user', 'secret_sauce')
 
   //error showing login has failed, and this message can be dismissed
   var errormsg = page.getByText('Epic sadface');
@@ -20,15 +20,7 @@ test('LockedOutUserLoginFailsDueToLockedOut', async ({ page }) => {
 });
 
 test('LockedOutUserLoginFailsDueToIncorrectPassword', async ({ page }) => {
-  await page.goto('https://qa-challenge.codesubmit.io/');
-  await expect(page).toHaveTitle('Swag Labs');
-
-  //fill username and password
-  await page.locator('[data-test="username"]').click();
-  page.locator('[data-test="username"]').fill('locked_out_user');
-  await page.locator('[data-test="password"]').click();
-  page.locator('[data-test="password"]').fill('secretsauce');
-  await page.locator('[data-test="login-button"]').click();
+  await loginHelper.login('locked_out_user', 'secretsauce')
 
   //error showing login has failed, and this message can be dismissed
   var errormsg = page.getByText('Epic sadface');
@@ -38,30 +30,13 @@ test('LockedOutUserLoginFailsDueToIncorrectPassword', async ({ page }) => {
 //performance_glitch_user
 //This user has high loading times.
 test('PerformanceGlitchUserSuccessfulLogin', async ({ page }) => {
-  await page.goto('https://qa-challenge.codesubmit.io/');
-  await expect(page).toHaveTitle('Swag Labs');
-
-  //fill username and password
-  await page.locator('[data-test="username"]').click();
-  page.locator('[data-test="username"]').fill('performance_glitch_user');
-  await page.locator('[data-test="password"]').click();
-  page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
+  await loginHelper.login('performance_glitch_user', 'secret_sauce')
 
   await expect(page.locator('[data-test="title"]')).toContainText('Products');
 });
 
 test('PerformanceGlitchUserCanLogoutSuccessfully', async ({ page }) => {
-  await page.goto('https://qa-challenge.codesubmit.io/');
-  await expect(page).toHaveTitle('Swag Labs');
-
-  //fill username and password
-  await page.locator('[data-test="username"]').click();
-  page.locator('[data-test="username"]').fill('performance_glitch_user');
-  await page.locator('[data-test="password"]').click();
-  page.locator('[data-test="password"]').fill('secret_sauce');
-  //await page.locator('[data-test="login-button"]').click();
-  await page.getByRole('button', { name: 'Login' }).click();
+  await loginHelper.login('performance_glitch_user', 'secret_sauce')
 
   //see that login is complete and products are displayed
   await expect(page.locator('[data-test="title"]')).toContainText('Products');
@@ -80,30 +55,12 @@ test('PerformanceGlitchUserCanLogoutSuccessfully', async ({ page }) => {
 //One product (Sauce Labs Fleece Jacket) leads to item not found (goes to id=6 which is out of range)
 
 test('ProblemUserSuccessfulLogin', async ({ page }) => {
-  await page.goto('https://qa-challenge.codesubmit.io/');
-  await expect(page).toHaveTitle('Swag Labs');
-
-  //fill username and password
-  await page.locator('[data-test="username"]').click();
-  page.locator('[data-test="username"]').fill('problem_user');
-  await page.locator('[data-test="password"]').click();
-  page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
-
+  await loginHelper.login('problem_user', 'secret_sauce')
   await expect(page.locator('[data-test="title"]')).toContainText('Products');
 });
 
 test('ProblemUserCanLogoutSuccessfully', async ({ page }) => {
-  await page.goto('https://qa-challenge.codesubmit.io/');
-  await expect(page).toHaveTitle('Swag Labs');
-
-  //fill username and password
-  await page.locator('[data-test="username"]').click();
-  page.locator('[data-test="username"]').fill('problem_user');
-  await page.locator('[data-test="password"]').click();
-  page.locator('[data-test="password"]').fill('secret_sauce');
-  //await page.locator('[data-test="login-button"]').click();
-  await page.getByRole('button', { name: 'Login' }).click();
+  await loginHelper.login('problem_user', 'secret_sauce')
 
   //see that login is complete and products are displayed
   await expect(page.locator('[data-test="title"]')).toContainText('Products');
@@ -117,15 +74,7 @@ test('ProblemUserCanLogoutSuccessfully', async ({ page }) => {
 });
 
 test('ProblemUserCheckoutAttempt', async ({ page }) => {
-  await page.goto('https://qa-challenge.codesubmit.io/');
-  await expect(page).toHaveTitle('Swag Labs');
-
-  //fill username and password
-  await page.locator('[data-test="username"]').click();
-  page.locator('[data-test="username"]').fill('problem_user');
-  await page.locator('[data-test="password"]').click();
-  page.locator('[data-test="password"]').fill('secret_sauce');
-  await page.locator('[data-test="login-button"]').click();
+  await loginHelper.login('problem_user', 'secret_sauce')
 
   //problem checking out, lastname field issue
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
