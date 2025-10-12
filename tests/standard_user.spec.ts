@@ -50,20 +50,23 @@ test('standardUserCanFilterProducts', async ({ page }) => {
   //see that login is complete and products are displayed
   await expect(page.locator('[data-test="inventory-list"]')).not.toBeEmpty();
 
-  //Filters
+  //Filters - ensure list changes accordingly
   await expect(page.locator('[data-test="active-option"]')).toContainText('Name (A to Z)');
   await expect(page.getByText('Name (Z to A)')).not.toBeVisible();
-  //check product order
-
+  //TODO: order az
 
   await page.locator('[data-test="product-sort-container"]').selectOption('za')
   await expect(page.locator('[data-test="active-option"]')).toContainText('Name (Z to A)');
+  // TODO: order za
 
   await page.locator('[data-test="product-sort-container"]').selectOption('lohi');
   await expect(page.locator('[data-test="active-option"]')).toContainText('Price (low to high)')
+  // TODO: order lohi
 
   await page.locator('[data-test="product-sort-container"]').selectOption('hilo');
   await expect(page.locator('[data-test="active-option"]')).toContainText('Price (high to low)')
+  // TODO: order hilo
+
 });
 
 test('standardUserIncorrectPasswordFails', async ({ page }) => {
@@ -83,6 +86,56 @@ test('standardUserIncorrectPasswordFails', async ({ page }) => {
   await expect(errormsg).toHaveText('Epic sadface: Username and password do not match any user in this service');
   await page.locator('[data-test="error-button"]').click();
   await expect(errormsg).not.toBeVisible();
+});
+
+test('StandardUserCheckoutSuccess', async ({ page }) => {
+  //login as std user
+  await loginHelper.login('standard_user', 'secret_sauce')
+
+  //problem checking out, lastname field issue
+  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  await page.locator('[data-test="shopping-cart-link"]').click();
+  await page.locator('[data-test="checkout"]').click();
+  await page.locator('[data-test="firstName"]').click();
+  await page.locator('[data-test="firstName"]').fill('waracle');
+  await page.locator('[data-test="lastName"]').click();
+  await page.locator('[data-test="lastName"]').fill('test');
+  await page.locator('[data-test="postalCode"]').click();
+  await page.locator('[data-test="postalCode"]').fill('G1 5QH');
+  await page.locator('[data-test="continue"]').click();
+  await page.locator('[data-test="finish"]').click();
+  await expect(page.locator('[data-test="complete-header"]')).toBeVisible();
+});
+
+test('RemoveItemFromCartPage', async ({ page }) => {
+  //login as std user
+  await loginHelper.login('standard_user', 'secret_sauce')
+
+  //remove text replaces add to cart text
+  //add to cart
+  await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+  await expect(page.locator('[data-test="remove-sauce-labs-backpack"]')).toBeVisible();
+
+  //remove from the cart page and check removed
+  await page.locator('[data-test="shopping-cart-link"]').click();
+  await expect(page.locator('[data-test="secondary-header"]')).toHaveText('Your Cart');
+  await expect(page.locator('[data-test="cart-list"]')).toContainText("Backpackcarry.allTheThings()");
+  await page.locator('[data-test="remove-sauce-labs-backpack"]').click();
+  await expect(page.locator('[data-test="cart-list"]')).not.toContainText("Backpackcarry.allTheThings()");
+});
+
+test('RemoveItemFromItemPage', async ({ page }) => {
+  //login as std user
+  await loginHelper.login('standard_user', 'secret_sauce')
+
+  //remove text replaces add to cart text
+  await page.locator('[data-test="item-1-title-link"]').click();
+  await expect(page.locator('[data-test="add-to-cart"]')).toBeVisible();
+  await expect(page.locator('[data-test="remove"]')).not.toBeVisible();
+
+  await page.locator('[data-test="add-to-cart"]').click();
+  await expect(page.locator('[data-test="add-to-cart"]')).not.toBeVisible();
+  await expect(page.locator('[data-test="remove"]')).toBeVisible();
 });
 
 //BELOW TWO NOT MENTIONED IN README BUT WERE ON WEBSITE AS 'Accepted Usernames' SO INCLUDED HERE
@@ -105,9 +158,8 @@ test('VisualUserLogin', async ({ page }) => {
   await expect(page.locator('[data-test="inventory-list"]')).not.toBeEmpty();
 });
 
-
-
-//filter a-z etc.
-//remove from basket
-//checkout success
-//can checkout with no products - fail
+//TODO: in future
+//check number increases in cart icon
+//values correct
+//add labels to all tests
+//quantities editable
