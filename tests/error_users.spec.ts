@@ -30,12 +30,14 @@ test('LockedOutUserLoginFailsDueToIncorrectPassword', async ({ page }) => {
 //performance_glitch_user
 //This user has high loading times.
 test('PerformanceGlitchUserSuccessfulLogin', async ({ page }) => {
+  test.slow();
   await loginHelper.login('performance_glitch_user', 'secret_sauce')
 
   await expect(page.locator('[data-test="title"]')).toContainText('Products');
 });
 
 test('PerformanceGlitchUserCanLogoutSuccessfully', async ({ page }) => {
+  test.slow();
   await loginHelper.login('performance_glitch_user', 'secret_sauce')
 
   //see that login is complete and products are displayed
@@ -55,11 +57,13 @@ test('PerformanceGlitchUserCanLogoutSuccessfully', async ({ page }) => {
 //One product (Sauce Labs Fleece Jacket) leads to item not found (goes to id=6 which is out of range)
 
 test('ProblemUserSuccessfulLogin', async ({ page }) => {
+  test.slow();
   await loginHelper.login('problem_user', 'secret_sauce')
   await expect(page.locator('[data-test="title"]')).toContainText('Products');
 });
 
 test('ProblemUserCanLogoutSuccessfully', async ({ page }) => {
+  test.slow();
   await loginHelper.login('problem_user', 'secret_sauce')
 
   //see that login is complete and products are displayed
