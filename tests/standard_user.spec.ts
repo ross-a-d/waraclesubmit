@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto('https://qa-challenge.codesubmit.io/')
 });
 
-test('cannotAccessPagesIfNotLoggedIn', { tag: ['@standarduser'] }, async ({ page }) => {
+test('CannotAccessPagesIfNotLoggedIn', { tag: ['@standarduser'] }, async ({ page }) => {
   var listOfPages = ["inventory", "cart", "checkout-step-one", "checkout-step-two", "checkout-complete"];
 
   for (let i = 0; i < listOfPages.length; i++) {
@@ -16,9 +16,10 @@ test('cannotAccessPagesIfNotLoggedIn', { tag: ['@standarduser'] }, async ({ page
     //await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: You can only access \'/inventory.html\' when you are logged in.');
     await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: You can only access \'/' + listOfPages[i].toString() + '.html\' when you are logged in.');
   }
+  //TODO: assert 404
 });
 
-test('standardUserCanLoginSuccessfully', async ({ page }) => {
+test('StdUserCanLoginSuccessfully', async ({ page }) => {
   //login as std user
   await loginHelper.login('standard_user', 'secret_sauce')
 
@@ -28,7 +29,7 @@ test('standardUserCanLoginSuccessfully', async ({ page }) => {
   await expect(page.locator('[data-test="username"]')).not.toBeVisible();
 });
 
-test('standardUserCanLogoutSuccessfully', async ({ page }) => {
+test('StdUserCanLogoutSuccessfully', async ({ page }) => {
   //login as std user
   await loginHelper.login('standard_user', 'secret_sauce')
 
@@ -43,7 +44,7 @@ test('standardUserCanLogoutSuccessfully', async ({ page }) => {
   await page.locator('[data-test="username"]').click();
 });
 
-test('standardUserCanFilterProducts', async ({ page }) => {
+test('FilterProducts', async ({ page }) => {
   //login as std user
   await loginHelper.login('standard_user', 'secret_sauce')
 
@@ -69,7 +70,7 @@ test('standardUserCanFilterProducts', async ({ page }) => {
 
 });
 
-test('standardUserIncorrectPasswordFails', async ({ page }) => {
+test('StdUserIncorrectPasswordFails', async ({ page }) => {
   await page.goto('https://qa-challenge.codesubmit.io/');
   await expect(page).toHaveTitle('Swag Labs');
 
@@ -88,7 +89,7 @@ test('standardUserIncorrectPasswordFails', async ({ page }) => {
   await expect(errormsg).not.toBeVisible();
 });
 
-test('StandardUserCheckoutSuccess', async ({ page }) => {
+test('CheckoutSuccessWithItem', async ({ page }) => {
   //login as std user
   await loginHelper.login('standard_user', 'secret_sauce')
 
@@ -162,4 +163,4 @@ test('VisualUserLogin', async ({ page }) => {
 //check number increases in cart icon
 //values correct
 //add labels to all tests
-//quantities editable
+//quantities editable etc. etc.
