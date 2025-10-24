@@ -1,0 +1,18 @@
+{
+  "name": "qa-hiring-fhiuaw",
+  "version": "1.0.0",
+  "description": "Your assignment is to write automated test cases for an online shop to test the core functionality of the site.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "http://waracle-1-csfxyg@git.codesubmit.io/waracle-1/qa-hiring-fhiuaw"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.7.2"
+  }
+}
